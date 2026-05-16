@@ -329,6 +329,18 @@ function spokenDuration(sec) {
    LECTEUR
    =========================================================== */
 const PREP_SEC = 5;
+const DEFAULT_TITLE = document.title;
+
+// Affiche l'étape en cours + le chrono dans l'onglet du navigateur
+function setTabTitle() {
+  if ($("#player").classList.contains("hidden")) {
+    document.title = DEFAULT_TITLE;
+    return;
+  }
+  const label = idx === -1 ? "Préparez-vous" : (timeline[idx] ? timeline[idx].name : "");
+  const prefix = paused ? "⏸ " : "";
+  document.title = `${prefix}${fmt(remaining)} · ${label}`;
+}
 
 let timeline = [];   // étapes "à plat" après expansion des tours
 let idx = 0;         // index courant dans timeline (ou -1 = préparation)
@@ -422,6 +434,7 @@ function paint() {
     pct = tot ? (done / tot) * 100 : 0;
   }
   $("#progressBar").style.width = `${pct}%`;
+  setTabTitle();
 }
 
 function run() {
@@ -461,6 +474,7 @@ function finish() {
   finishSound();
   speak("Circuit terminé. Bravo !");
   releaseWakeLock();
+  document.title = "✅ Circuit terminé";
 }
 
 $("#pauseBtn").addEventListener("click", () => {
@@ -468,6 +482,7 @@ $("#pauseBtn").addEventListener("click", () => {
   $("#pauseBtn").textContent = paused ? "▶" : "⏸";
   if (paused) { speechSynthesis.cancel(); releaseWakeLock(); }
   else { requestWakeLock(); }
+  setTabTitle();
 });
 
 $("#skipBtn").addEventListener("click", () => {
@@ -488,6 +503,7 @@ $("#stopBtn").addEventListener("click", () => {
   releaseWakeLock();
   $("#player").classList.add("hidden");
   $("#editor").classList.remove("hidden");
+  setTabTitle();
 });
 
 /* ===========================================================
