@@ -3,10 +3,17 @@
 Petite application web (HTML/CSS/JS pur, **aucune installation**) pour construire,
 enregistrer et exécuter des circuits d'entraînement minutés.
 
+Tout tient dans **un seul fichier autonome** : `index.html` (le CSS et le JS
+sont intégrés dedans).
+
 ## Utilisation
 
 Ouvrir `index.html` dans un navigateur (double-clic), ou l'héberger sur
 n'importe quel serveur statique / GitHub Pages.
+
+**Sur smartphone** : il suffit de transférer le **seul fichier `index.html`**
+sur le téléphone (e-mail, cloud, câble…) puis de l'ouvrir. Comme tout est dans
+ce fichier unique, plus besoin d'emmener `style.css` / `app.js` à côté.
 
 ## Fonctionnalités
 
