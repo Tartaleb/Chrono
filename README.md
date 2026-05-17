@@ -3,17 +3,21 @@
 Petite application web (HTML/CSS/JS pur, **aucune installation**) pour construire,
 enregistrer et exécuter des circuits d'entraînement minutés.
 
-Tout tient dans **un seul fichier autonome** : `index.html` (le CSS et le JS
-sont intégrés dedans).
+Structure : `index.html` (markup) + `style.css` + `app.js` (logique) +
+`nosleep.js` (bibliothèque NoSleep.js v0.12.0, MIT, garde l'écran allumé).
 
 ## Utilisation
 
-Ouvrir `index.html` dans un navigateur (double-clic), ou l'héberger sur
-n'importe quel serveur statique / GitHub Pages.
+**En ligne (recommandé) :** <https://tartaleb.github.io/Chrono/> — déployé
+automatiquement par GitHub Pages à chaque `git push` sur `main`. À utiliser
+sur smartphone : l'adresse étant en HTTPS, l'API Wake Lock fonctionne et
+l'écran reste allumé pendant la séance. Astuce : « Ajouter à l'écran d'accueil ».
 
-**Sur smartphone** : il suffit de transférer le **seul fichier `index.html`**
-sur le téléphone (e-mail, cloud, câble…) puis de l'ouvrir. Comme tout est dans
-ce fichier unique, plus besoin d'emmener `style.css` / `app.js` à côté.
+**En local :** servir le dossier avec n'importe quel serveur statique
+(`python -m http.server`, extension Live Server, etc.). Les chemins étant
+relatifs, ouvrir `index.html` en `file://` fonctionne aussi, mais l'API
+Wake Lock y est désactivée par les navigateurs (un repli vidéo NoSleep prend
+alors le relais, de façon moins fiable).
 
 ## Fonctionnalités
 
