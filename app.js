@@ -370,17 +370,54 @@ function buildTimeline() {
   return tl;
 }
 
-// Garde l'écran allumé : API Wake Lock si dispo, sinon repli vidéo (NoSleep).
-// NoSleep réacquiert lui-même le verrou au retour d'arrière-plan.
-function keepAwake() {
+// Garde l'écran allumé : API Wake Lock native en priorité (Chrome Android
+// la supporte), sinon repli vidéo (NoSleep). Le verrou Wake Lock est
+// libéré automatiquement quand la page devient cachée : on le réacquiert
+// au retour au premier plan via le listener visibilitychange plus bas.
+let wakeLock = null; // WakeLockSentinel ou la chaîne "nosleep" (repli)
+
+async function keepAwake() {
+  if (wakeLock) return;
+  if ("wakeLock" in navigator) {
+    try {
+      const sentinel = await navigator.wakeLock.request("screen");
+      sentinel.addEventListener("release", () => {
+        if (wakeLock === sentinel) wakeLock = null;
+      });
+      wakeLock = sentinel;
+      return;
+    } catch (_) { /* on tombe sur le repli ci-dessous */ }
+  }
   try {
     const r = noSleep.enable();
     if (r && typeof r.catch === "function") r.catch(() => {});
+    wakeLock = "nosleep";
   } catch {}
 }
-function allowSleep() {
-  try { noSleep.disable(); } catch {}
+
+async function allowSleep() {
+  if (wakeLock === "nosleep") {
+    try { noSleep.disable(); } catch {}
+    wakeLock = null;
+    return;
+  }
+  if (wakeLock) {
+    try { await wakeLock.release(); } catch {}
+    wakeLock = null;
+  }
 }
+
+// Réacquisition au retour au premier plan, si un circuit tourne et n'est
+// pas en pause (sinon le bouton Reprendre s'en chargera).
+document.addEventListener("visibilitychange", () => {
+  if (
+    document.visibilityState === "visible" &&
+    !paused &&
+    !$("#player").classList.contains("hidden")
+  ) {
+    keepAwake();
+  }
+});
 
 $("#startBtn").addEventListener("click", () => {
   timeline = buildTimeline();
